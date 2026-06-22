@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import SRC from "../assets/src.webp";
-import handleScrollToTop from "../Theme/HandleSmoothScroll";
+import handleScrollToTop from "../Theme/handleSmoothScroll";
 
 const StoriesList = (props) => {
   const navigate = useNavigate();

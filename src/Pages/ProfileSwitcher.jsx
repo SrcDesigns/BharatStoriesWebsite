@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfile } from "../Store/profileSlice";
 import { motion, AnimatePresence } from "framer-motion";
+import handleScrollToTop from "../Theme/handleSmoothScroll";
 
 const profiles = [
   {
@@ -60,9 +61,16 @@ const ProfileSwitcher = () => {
     setFlyingAvatar(profile);
 
     setTimeout(() => {
-      if (profile.id === "toddler") navigate("/toddler");
-      else if (profile.id === "kids") navigate("/kids");
-      else navigate("/home");
+      if (profile.id === "toddler") {
+        navigate("/toddler");
+        handleScrollToTop();
+      } else if (profile.id === "kids") {
+        navigate("/kids");
+        handleScrollToTop();
+      } else {
+        navigate("/home");
+        handleScrollToTop();
+      }
       setFlyingAvatar(null);
     }, 900);
   };

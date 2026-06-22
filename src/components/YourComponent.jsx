@@ -1,4 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { useSelector } from "react-redux";
 
 const YourComponent = ({ story, language }) => {
@@ -8,8 +14,24 @@ const YourComponent = ({ story, language }) => {
 
   const imageRefs = useRef([]);
   const paraRefs = useRef([]);
+  const audioRef = useRef(null);
   const [splitTexts, setSplitTexts] = useState([]);
   const [imagesLoaded, setImagesLoaded] = useState({});
+  const [onPlay, setOnPlay] = useState(false);
+
+  const handlePlayPause = () => {
+    setOnPlay((prev) => !prev);
+  };
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    if (onPlay) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [onPlay]);
 
   // TTS state
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -133,11 +155,10 @@ const YourComponent = ({ story, language }) => {
 
       await new Promise((resolve) => {
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = language === "te" ? "te-IN" : language === "hi" ? "hi-IN" : "en-US";
+        utterance.lang =
+          language === "te" ? "te-IN" : language === "hi" ? "hi-IN" : "en-US";
 
-        const voice = voices.find(
-          (v) => v.lang === utterance.lang
-        );
+        const voice = voices.find((v) => v.lang === utterance.lang);
         if (voice) utterance.voice = voice;
 
         utterance.onend = resolve;
@@ -165,7 +186,10 @@ const YourComponent = ({ story, language }) => {
   };
 
   // Check if any part has content in the selected language
-  const hasContentInLanguage = story?.part?.some((section) => section.text?.[language]);
+  const hasContentInLanguage = story?.part?.some(
+    (section) => section.text?.[language],
+  );
+
 
   return (
     <>
@@ -176,9 +200,14 @@ const YourComponent = ({ story, language }) => {
       ) : (
         (story?.part || []).map((section, index) => (
           <div key={section.id} className="mt-6">
-            <p style={{ fontSize: `${fontSize + 2}px` }} className="font-bold mb-[5px]">
+            <p
+              style={{ fontSize: `${fontSize + 2}px` }}
+              className="font-bold mb-[5px]"
+            >
               {`${index + 1})`} {section.heading?.[language] || ""}{" "}
-              <span className="italic font-normal">{section.quote?.[language] || ""}</span>
+              <span className="italic font-normal">
+                {section.quote?.[language] || ""}
+              </span>
             </p>
             <div
               className={`pt-2 flex flex-col md:flex-row ${
@@ -188,7 +217,9 @@ const YourComponent = ({ story, language }) => {
               <div className="md:w-1/2 w-full">
                 <img
                   ref={(el) => (imageRefs.current[index] = el)}
-                  onLoad={() => setImagesLoaded((prev) => ({ ...prev, [index]: true }))}
+                  onLoad={() =>
+                    setImagesLoaded((prev) => ({ ...prev, [index]: true }))
+                  }
                   style={{ border: "2px solid white" }}
                   className="w-full h-auto md:object-cover rounded-lg"
                   src={section.image || "https://via.placeholder.com/150"}
@@ -196,6 +227,15 @@ const YourComponent = ({ story, language }) => {
                 />
               </div>
               <div className="md:w-1/2 w-full">
+                <>
+                  <p>{section?.slokam?.[language]}</p>
+
+                  {/* <p onClick={handlePlayPause} style={{ cursor: "pointer" }}>
+                    {onPlay ? "⏸️" : "▶️"}
+                  </p> */}
+
+                  {section?.slokamAudio && <audio ref={audioRef} controls={true} src={section?.slokamAudio || ""} /> }
+                </>
                 <p
                   style={{ fontSize: `${fontSize}px` }}
                   className="text-justify"
@@ -207,7 +247,9 @@ const YourComponent = ({ story, language }) => {
             </div>
             {isDesktop && splitTexts[index]?.second && (
               <div className="text-justify">
-                <p style={{ fontSize: `${fontSize}px` }}>{splitTexts[index].second}</p>
+                <p style={{ fontSize: `${fontSize}px` }}>
+                  {splitTexts[index].second}
+                </p>
               </div>
             )}
           </div>
@@ -222,11 +264,17 @@ const YourComponent = ({ story, language }) => {
           bottom: "20px",
           left: "20px",
           padding: "12px 24px",
-          background: !hasContentInLanguage || !voicesLoaded ? "#6c757d" : isSpeaking ? "#dc3545" : "#28a745",
+          background:
+            !hasContentInLanguage || !voicesLoaded
+              ? "#6c757d"
+              : isSpeaking
+                ? "#dc3545"
+                : "#28a745",
           color: "white",
           border: "none",
           borderRadius: "8px",
-          cursor: hasContentInLanguage && voicesLoaded ? "pointer" : "not-allowed",
+          cursor:
+            hasContentInLanguage && voicesLoaded ? "pointer" : "not-allowed",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
           zIndex: 1000,
           fontSize: "16px",
@@ -234,14 +282,17 @@ const YourComponent = ({ story, language }) => {
           opacity: hasContentInLanguage && voicesLoaded ? 1 : 0.5,
         }}
       >
-        {!hasContentInLanguage || !voicesLoaded ? "Loading..." : isSpeaking ? "Stop" : "Read"}
+        {!hasContentInLanguage || !voicesLoaded
+          ? "Loading..."
+          : isSpeaking
+            ? "Stop"
+            : "Read"}
       </button>
     </>
   );
 };
 
 export default YourComponent;
-
 
 // import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
 // import { useSelector } from "react-redux";
@@ -554,4 +605,3 @@ export default YourComponent;
 // };
 
 // export default YourComponent;
-

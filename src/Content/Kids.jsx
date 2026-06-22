@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import HomeBanner from "./HomeBanner";
 import { useStoriesContext } from "./Layout";
+import handleScrollToTop from "../Theme/handleSmoothScroll";
 
 const Kids = () => {
   const [story, setStory] = useState(null);
@@ -25,6 +26,7 @@ const Kids = () => {
 
   const handleCardClick = (cardTitle) => {
     navigate(`/kids/${encodeURIComponent(cardTitle)}`);
+    handleScrollToTop();
   };
 
   // Show loading state

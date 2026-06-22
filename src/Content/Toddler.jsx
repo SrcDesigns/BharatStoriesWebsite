@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import HomeBanner from "./HomeBanner";
 import { useStoriesContext } from "./Layout";
+import handleScrollToTop from "../Theme/handleSmoothScroll";
 
 const Toddler = () => {
   const [story, setStory] = useState(null);
@@ -26,6 +27,7 @@ const Toddler = () => {
   // 🔹 Navigate to detail page when card is clicked
   const handleCardClick = (cardTitle) => {
     navigate(`/toddler/${encodeURIComponent(cardTitle)}`);
+    handleScrollToTop();
   };
   console.log("Toddler stories:", toddlerStories);
   

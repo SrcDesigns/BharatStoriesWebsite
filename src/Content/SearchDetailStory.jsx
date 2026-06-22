@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useOutletContext, useNavigate } from "react-router-dom";
 import { StoryShimmer } from "../components/Loading/storyShimmer";
-import handleScrollToTop from "../Theme/HandleSmoothScroll";
+import handleScrollToTop from "../Theme/handleSmoothScroll";
 import YourComponent from "../components/YourComponent";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
